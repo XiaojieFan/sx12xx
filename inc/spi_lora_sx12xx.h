@@ -77,4 +77,5 @@ void SX1276ReadFifo(uint8_t *buffer, uint8_t size);
 void SX1276SetReset(uint8_t state);
 uint8_t SX1276_Spi_Check(void);
 void sx12xx_deinit(struct rt_spi_device *dev);
+void SX1276WriteRxTx(uint8_t txEnable);
 #endif
