@@ -105,7 +105,7 @@ sx12xx spi check ok!            ## SPI 测试完成
 
 ## 4、常见问题
 
-- SPI 设备初始化时断言问题
+- SPI 设备初始化时找不到设备问题
 
   ```shell
  spi sample run failed! cant't find spi12 device!
