@@ -4,46 +4,55 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  * Change Logs:
- * Date           Author       Notes
- * 2018-10-23     flybreak     the first version
+ * Date           Author         Notes
+ * 2019-02-20     XiaojieFan     the first version
  */
 
 #include <rtthread.h>
-#include "mpu6xxx.h"
+#include "spi_lora_sx12xx.h"
+#include "drv_spi.h"
+#include "radio.h"
 
-/* Default configuration, please change according to the actual situation, support i2c and spi device name */
-#define MPU6XXX_DEVICE_NAME  "i2c2"
+/* Default configuration, please change according to the actual situation, support  spi device name */
+#define SX12XX_DEVICE_NAME  "spi10"
+#define BUFFER_SIZE                                 9 // Define the payload size here
 
+extern tRadioDriver *Radio;
+static struct rt_spi_device *spi_dev_sx1278 = RT_NULL;
+const uint8_t PingMsg[] = "PING";
+const uint8_t PongMsg[] = "PONG";
 /* Test function */
-static int mpu6xxx_test()
+static int sx12xx_test(int argc, char *argv[])
 {
-    struct mpu6xxx_device *dev;
-    struct mpu6xxx_3axes accel, gyro;
-    int i;
-
-    /* Initialize mpu6xxx, The parameter is RT_NULL, means auto probing for i2c*/
-    dev = mpu6xxx_init(MPU6XXX_DEVICE_NAME, RT_NULL);
-
-    if (dev == RT_NULL)
+   
+    char name[RT_NAME_MAX];
+    if (argc == 2)
     {
-        rt_kprintf("mpu6xxx init failed\n");
-        return -1;
+        rt_strncpy(name, argv[1], RT_NAME_MAX);
     }
-    rt_kprintf("mpu6xxx init succeed\n");
-
-    for (i = 0; i < 5; i++)
+    else
     {
-        mpu6xxx_get_accel(dev, &accel);
-        mpu6xxx_get_gyro(dev, &gyro);
-
-        rt_kprintf("accel.x = %3d, accel.y = %3d, accel.z = %3d ", accel.x, accel.y, accel.z);
-        rt_kprintf("gyro.x = %3d gyro.y = %3d, gyro.z = %3d\n", gyro.x, gyro.y, gyro.z);
-
-        rt_thread_mdelay(100);
+        rt_strncpy(name, SX12XX_DEVICE_NAME, RT_NAME_MAX);
     }
+    if (spi_dev_sx1278 == RT_NULL)
+    {
+        spi_dev_sx1278 = sx12xx_init(name, RT_NULL);
+        if (spi_dev_sx1278 == RT_NULL)
+        {
+            rt_kprintf("sx12xx init failed\n");
+            return -1;
+        }
+    }
+    rt_kprintf("sx12xx init succeed\n");
 
-    mpu6xxx_deinit(dev);
-
+    if (0x91 != SX1276_Spi_Check())
+    {
+        rt_kprintf("sx12xx spi check failed!\n!");
+    }
+    else
+    {
+        rt_kprintf("sx12xx spi check ok!\n");
+    }
     return 0;
 }
-MSH_CMD_EXPORT(mpu6xxx_test, mpu6xxx sensor test function);
+MSH_CMD_EXPORT(sx12xx_test, lora chip sx12xx test function);
