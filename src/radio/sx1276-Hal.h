@@ -21,7 +21,8 @@
 #ifndef __SX1276_HAL_H__
 #define __SX1276_HAL_H__
 
-#include "ioe.h"
+//#include "ioe.h"
+#include "platform.h"
 
 /*!
  * DIO state read functions mapping
@@ -36,7 +37,7 @@
 // RXTX pin control see errata note
 #define RXTX( txEnable )                            SX1276WriteRxTx( txEnable );
 
-#define GET_TICK_COUNT( )                           ( TickCounter )
+#define GET_TICK_COUNT( )                           rt_tick_get()//( TickCounter )
 #define TICK_RATE_MS( ms )                          ( ms )
 
 typedef enum

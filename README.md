@@ -108,7 +108,7 @@ sx12xx spi check ok!            ## SPI 测试完成
 - SPI 设备初始化时找不到设备问题
 
   ```shell
-  spi sample run failed! cant't find spi12 device 
+  spi sample run failed! cant't find spi12 device!
   ```
 
   出现上述问题，可能原因是 ENV 中配置 SX12XX 使用的 SPI 设备类型不正确，可以在添加 SX12XX 软件包之前在 FinSH 中使用 `list_device` 查看当前可用 SPI 设备名称，如果 BSP 工程中没有 SPI 设备或者只有 SPI 总线设备，需要手动在驱动中添加 SPI 设备，并正确配置 SX12XX 软件包中使用的 SPI 设备名称。
